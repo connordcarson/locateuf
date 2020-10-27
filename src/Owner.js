@@ -1,14 +1,14 @@
-import React from 'react';
-import Firebase from 'firebase';
-import config from './config';
+import React, { Component } from 'react';
+import Firebase from "firebase";
+import config from "./config";
 
-class Owner extends React.Component {
+class Owner extends Component {
   constructor(props) {
     super(props);
     Firebase.initializeApp(config);
 
     this.state = {
-      listings: []
+      developers: []
     };
   }
 
@@ -39,90 +39,82 @@ class Owner extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    let own = this.own.value;
-    let addr = this.addr.value;
-    let price = this.price.value;
-    let uid = this.uid.value;
+    let name = this.refs.name.value;
+    let addr = this.refs.addr.value;
+    let uid = this.refs.uid.value;
+    let price = this.refs.price.value;
 
-    if (uid && own && addr && price) {
-      const { listings } = this.state;
-      const spaceIndex = listings.findIndex(data => {
+    if (uid && name && addr) {
+      const { developers } = this.state;
+      const devIndex = developers.findIndex(data => {
         return data.uid === uid;
       });
-      listings[spaceIndex].own = own;
-      listings[spaceIndex].addr = addr;
-      listings[spaceIndex].price = price;
-      this.setState({ listings });
-    } else if (own && addr && price) {
+      developers[devIndex].name = name;
+      developers[devIndex].addr = addr;
+      developers[devIndex].price = price;
+      this.setState({ developers });
+    } else if (name && addr && price) {
       const uid = new Date().getTime().toString();
-      const { listings } = this.state;
-      listings.push({ uid, own, addr, price });
-      this.setState({ listings });
+      const { developers } = this.state;
+      developers.push({ uid, name, addr, price });
+      this.setState({ developers });
     }
 
-    this.own.value = "";
-    this.addr.value = "";
-    this.price.value = "";
-    this.uid.value = "";
+    this.refs.name.value = "";
+    this.refs.addr.value = "";
+    this.refs.uid.value = "";
+    this.refs.price.value = "";
   };
 
-  removeData = listing => {
-    const { listings } = this.state;
-    const newState = listings.filter(data => {
-      return data.uid !== listing.uid;
+  removeData = developer => {
+    const { developers } = this.state;
+    const newState = developers.filter(data => {
+      return data.uid !== developer.uid;
     });
-    this.setState({ listings: newState });
+    this.setState({ developers: newState });
   };
 
-  updateData = listing => {
-    this.uid.value = listing.uid;
-    this.own.value = listing.own;
-    this.addr.value = listing.addr;
-    this.price.value = listing.price;
+  updateData = developer => {
+    this.refs.uid.value = developer.uid;
+    this.refs.name.value = developer.name;
+    this.refs.addr.value = developer.addr;
+    this.refs.price.value = developer.price;
   };
 
-  /*render() {
-    const { listings } = this.state;
-    return (
-      <div className="container">
-        <h1>Owner Spaces</h1>
-        <p>Add a listing below to show your space to a farmer.</p>
-        <Table listingData={listings} removeListing={this.removeListing} updateListing={this.updateListing}/>
-        <h3>Add New Listing</h3>
-        <Form handleSubmit={this.handleSubmit} />
-      </div>
-    )
-  };*/
   render() {
-    const { listings } = this.state;
+    const { developers } = this.state;
     return (
       <React.Fragment>
+        <div>
+          <h1>Owner Portal</h1>
+          <p>This is the Owner's viewing portal.</p>
+        </div>
         <div className="container">
           <div className="row">
             <div className="col-xl-12">
-              <h1>Firebase Development Team</h1>
+              <h3>Owner's Listings</h3>
             </div>
           </div>
           <div className="row">
             <div className="col-xl-12">
-              {listings.map(listing => (
+              {developers.map(developer => (
                 <div
-                  key={listing.uid}
+                  key={developer.uid}
                   className="card float-left"
                   style={{ width: "18rem", marginRight: "1rem" }}
                 >
                   <div className="card-body">
-                    <h5 className="card-title">{listing.own}</h5>
-                    <p className="card-text">{listing.addr}</p>
-                    <p className="card-text">{listing.price}</p>
+                    <h5 className="card-title">{developer.name}</h5>
+                    <p className="card-text">{developer.addr}</p>
+                    <p className="card-text">{developer.price}</p>
                     <button
-                      onClick={() => this.removeData(listing)}
+                      onClick={() => this.removeData(developer)}
                       className="btn btn-link"
                     >
                       Delete
                     </button>
                     <button
-                      onClick={() => this.updateData(listing)}
+                      onClick={() => this.updateData(developer)}
                       className="btn btn-link"
                     >
                       Edit
@@ -134,7 +126,7 @@ class Owner extends React.Component {
           </div>
           <div className="row">
             <div className="col-xl-12">
-              <h1>Add new team member here</h1>
+              <h3>Add or edit a listing below:</h3>
               <form onSubmit={this.handleSubmit}>
                 <div className="form-row">
                   <input type="hidden" ref="uid" />
@@ -142,18 +134,27 @@ class Owner extends React.Component {
                     <label>Name</label>
                     <input
                       type="text"
-                      ref="own"
+                      ref="name"
                       className="form-control"
                       placeholder="Name"
                     />
                   </div>
                   <div className="form-group col-md-6">
-                    <label>Role</label>
+                    <label>Address</label>
                     <input
                       type="text"
-                      ref="role"
+                      ref="addr"
                       className="form-control"
-                      placeholder="Role"
+                      placeholder="Address"
+                    />
+                  </div>
+                  <div className="form-group col-md-6">
+                    <label>Price</label>
+                    <input
+                      type="text"
+                      ref="price"
+                      className="form-control"
+                      placeholder="Price"
                     />
                   </div>
                 </div>
@@ -163,20 +164,10 @@ class Owner extends React.Component {
               </form>
             </div>
           </div>
-          <div className="row">
-            <div className="col-xl-12">
-              <h3>
-                Tutorial{" "}
-                <a href="https://www.educative.io/edpresso/firebase-as-simple-database-to-react-app">
-                  here
-                </a>
-              </h3>
-            </div>
-          </div>
         </div>
       </React.Fragment>
     );
   }
-};
+}
 
 export default Owner;
