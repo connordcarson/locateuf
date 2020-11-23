@@ -5,7 +5,9 @@ import config from "./config";
 class Farmer extends Component {
   constructor(props) {
     super(props);
-    Firebase.initializeApp(config);
+    if (Firebase.apps.length === 0) {
+      Firebase.initializeApp(config);
+  }
 
     this.state = {
       developers: []
@@ -50,18 +52,6 @@ class Farmer extends Component {
                     <h5 className="card-title">{developer.name}</h5>
                     <p className="card-text">{developer.addr}</p>
                     <p className="card-text">{developer.price}</p>
-                    <button
-                      onClick={() => this.removeData(developer)}
-                      className="btn btn-link"
-                    >
-                      Delete
-                    </button>
-                    <button
-                      onClick={() => this.updateData(developer)}
-                      className="btn btn-link"
-                    >
-                      Edit
-                    </button>
                   </div>
                 </div>
               ))}

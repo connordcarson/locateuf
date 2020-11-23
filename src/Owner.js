@@ -5,7 +5,9 @@ import config from "./config";
 class Owner extends Component {
   constructor(props) {
     super(props);
-    Firebase.initializeApp(config);
+    if (Firebase.apps.length === 0) {
+      Firebase.initializeApp(config);
+  }
 
     this.state = {
       developers: []
