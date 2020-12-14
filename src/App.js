@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
+import withFirebaseAuth from 'react-with-firebase-auth';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import firebaseConfig from './firebaseConfig';
 
-class App extends Component {
-  render() {
-    return (
-    <div>
-      <h4>Home</h4>
-      <p>This is the Home page.</p>
-    </div>);
-  }
-}
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+const firebaseAppAuth = firebaseApp.auth();
+const providers = {
+  googleProvider: new firebase.auth.GoogleAuthProvider(),
+};
+
  
-export default App;
+export default withFirebaseAuth({
+  providers,
+  firebaseAppAuth,
+})(App);

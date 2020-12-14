@@ -1,43 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Buy_Rent from './pages/Buy_Rent.js';
+import Sell_Lease from './pages/Sell_Lease.js';
+import Home from './pages/Home.js';
+import Listings from './pages/Listings.js';
+import Account from './pages/Account.js';
+import NoMatch from './pages/404page.js';
+
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Header } from './components/Header';
+import { Footer } from './components/Footer';
 import './index.css';
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
-import App from './App';
-import About from './About';
-import Contact from './Contact';
-import Farmer from './Farmer';
-import Owner from './Owner';
- 
+
+
 const routing = (
-  <BrowserRouter>
-    <div>
-      <h3>LocateVF</h3>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/farmer">Farmer</Link>
-        </li>
-        <li>
-          <Link to="/owner">Owner</Link>
-        </li>
-        <li>
-          <Link to="/about">About</Link>
-        </li>
-        <li>
-          <Link to="/contact">Contact</Link>
-        </li>
-      </ul>
+  <React.Fragment>
+    <Router>
+    <Header />
       <Switch>
-        <Route exact path="/" component={App} />
-        <Route path="/about" component={About} />
-        <Route path="/contact" component={Contact} />
-        <Route path="/farmer" component={Farmer} />
-        <Route path="/owner" component={Owner} />
+        <Route exact path="/" component={Home} />
+        <Route path="/farmer" component={Buy_Rent} />
+        <Route path="/owner" component={Sell_Lease} />
+        <Route path="/listings" component={Listings} />
+        <Route path="/account" component={Account} />
+        
+        <Route component={NoMatch} />
       </Switch>
-    </div>
-  </BrowserRouter>
+    </Router>
+    <Footer />
+  </React.Fragment>
 )
- 
+
 ReactDOM.render(routing, document.getElementById('root'));
